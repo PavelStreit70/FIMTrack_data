@@ -4,7 +4,7 @@
 #do GraphPadu
 
 library(readr)
-kontrola_1_varka <- read_csv("Rko/outputs/Prvni varka/output_2025-03-27_17-11-54/250324_prvni_varka_vyhodnoceno_kontrola.csv")
+kontrola_1_varka <- read_csv("Rko/outputs/Prvni varka/output_2025-03-27_17-11-54/250324_1.csv")
 View(kontrola_1_varka)
 
 str(kontrola_1_varka)
@@ -56,3 +56,5 @@ kontrola_1_varka %>%
   group_by(parametr) %>%
   summarise(across(starts_with("larva"), ~mean(.x, na.rm = TRUE)))
 
+
+#Přidat podmínku s gophase - hýbaly se aspoň 50% času - půjde to/dáva to smysl?
