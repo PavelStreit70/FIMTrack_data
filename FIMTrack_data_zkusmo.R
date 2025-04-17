@@ -86,4 +86,4 @@ kontrola_1_varka %>%
 
 
 #Přidat podmínku s gophase - hýbaly se aspoň 50% času - půjde to/dáva to smysl?
-#Tuhle podmínku nechat na konec
+#Tuhle podmínku nechat na konec, pokud na ni zbyde čas
