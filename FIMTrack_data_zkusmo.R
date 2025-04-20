@@ -59,15 +59,32 @@ kontrola_1_varka %>%
 
 #Vypsat celkovou uraženou vzdálenost acc_dist
 
-kontrola_1_varka %>%
-  filter(grepl("acc_dst", `...1`)) %>%  # Filtrování podle parametrů
-  slice_tail(n = 1)  # Získání posledního řádku
+####Ještě jednou
 
-kontrola_1_varka %>%
-  filter(grepl("acc_dst", `...1`)) %>%  # Filtrovat řádky, kde je 'acc_dst'
-  mutate(acc_dst_value = as.numeric(str_extract(`...1`, "(?<=acc_dst=)[0-9.]+"))) %>%  # Extrahujeme číslo za 'acc_dst='
-  filter(!is.na(acc_dst_value)) %>%  # Odstraníme řádky s NA
-  summarise(last_acc_dst = tail(acc_dst_value, 1))  # Získáme poslední hodnotu
+# Načti knihovnu pro práci s daty
+library(dplyr)
+
+# Načti data
+data <- read.csv("Rko/250331_1.csv", check.names = FALSE)
+
+# Přejmenuj první sloupec na 'parameter'
+colnames(data)[1] <- "parameter"
+
+# Vyfiltruj řádky s acc_dst
+acc_dst_rows <- data %>% filter(grepl("acc_dst", parameter))
+
+# Funkce na získání poslední nenulové / ne-NA hodnoty ve sloupci
+get_last_valid <- function(column) {
+  rev_column <- rev(column)
+  last_value <- rev_column[!is.na(rev_column) & rev_column != 0][1]
+  return(last_value)
+}
+
+# Aplikuj funkci na každý sloupec kromě 'parameter'
+last_valid_values <- sapply(acc_dst_rows[ , -1], get_last_valid)
+
+# Výpis
+print(last_valid_values)
 
 #Vypsat coiling a go phase - součty hodnot - 0 a 1
 
