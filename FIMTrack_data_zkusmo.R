@@ -90,17 +90,31 @@ print(last_valid_values)
 
 library(dplyr)
 
-keywords <- c("coiling", "go_phase")  # Klíčová slova, která hledáme v textu
+keywords <- c("is_coiled", "go_phase")  # Klíčová slova, která hledáme v textu
+
+#Napřed součty
 
 kontrola_1_varka %>%
   filter(Reduce(`|`, lapply(keywords, function(k) grepl(k, ...1)))) %>%  # Filtrovat podle klíčových slov
   mutate(parametr = case_when(
-    grepl("coiling", ...1) ~ "coiling",  # Pokud obsahuje "coiling", označíme jako "coiling"
+    grepl("is_coiled", ...1) ~ "is_coiled",  # Pokud obsahuje "coiling", označíme jako "coiling"
     grepl("go_phase", ...1) ~ "go_phase"  # Pokud obsahuje "go_phase", označíme jako "go_phase"
   )) %>%
   group_by(parametr) %>%  # Skupina podle "parametr"
-  summarise(across(starts_with("larva"), ~mean(.x, na.rm = TRUE)))  # Průměr pro každý "larva" sloupec
+  summarise(across(starts_with("larva"), ~sum(.x, na.rm = TRUE)))
 
+#Pak průměry
+
+kontrola_1_varka %>%
+  filter(Reduce(`|`, lapply(keywords, function(k) grepl(k, ...1)))) %>%  # Filtrovat podle klíčových slov
+  mutate(parametr = case_when(
+    grepl("is_coiled", ...1) ~ "is_coiled",  # Pokud obsahuje "coiling", označíme jako "coiling"
+    grepl("go_phase", ...1) ~ "go_phase"  # Pokud obsahuje "go_phase", označíme jako "go_phase"
+  )) %>%
+  group_by(parametr) %>%  # Skupina podle "parametr"
+  summarise(
+    # Průměr pro každý sloupec začínající na "larva"
+    across(starts_with("larva"), ~mean(.x, na.rm = TRUE)))
 
 #Přidat podmínku s gophase - hýbaly se aspoň 50% času - půjde to/dáva to smysl?
 #Tuhle podmínku nechat na konec, pokud na ni zbyde čas
